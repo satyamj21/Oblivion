@@ -1,0 +1,14 @@
+{
+  "name": "zombieguard",
+  "version": "1.0.0",
+  "description": "ZombieGuard — Intelligent Zombie API Discovery and Defense Platform for Banking",
+  "scripts": {
+    "backend": "cd backend && npm run dev",
+    "frontend": "cd frontend && npm start",
+    "install:all": "cd backend && npm install && cd ../frontend && npm install",
+    "start": "echo 'Run: npm run backend (terminal 1) && npm run frontend (terminal 2)'"
+  },
+  "keywords": ["api-security", "zombie-api", "banking", "cybersecurity", "mern"],
+  "author": "ZombieGuard Team",
+  "license": "MIT"
+}
