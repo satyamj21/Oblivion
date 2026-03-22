@@ -1,4 +1,4 @@
-# 🧟 ZombieGuard — Intelligent API Defense Platform for Banking
+# 🧟 Oblivion — Intelligent API Defense Platform for Banking
 
 > **"Antivirus for APIs in a bank"** — Detects hidden, stale, and dangerous zombie APIs, scores their risk, and automates remediation.
 
@@ -6,7 +6,7 @@
 
 ## 🎯 What This Project Does
 
-ZombieGuard is a full-stack cybersecurity platform that:
+Oblivion is a full-stack cybersecurity platform that:
 
 1. **Discovers** APIs from Swagger files, manual input, and simulated network scanning
 2. **Classifies** each API as: `active`, `deprecated`, `orphaned`, or **`zombie`**
@@ -39,7 +39,7 @@ Frontend (React)  ←→  Backend (Node/Express)  ←→  MongoDB
 ## 📁 Folder Structure
 
 ```
-zombieguard/
+oblivion/
 ├── backend/
 │   ├── server.js                    # Express entry point + cron scheduler
 │   ├── models/
@@ -64,7 +64,7 @@ zombieguard/
 │   ├── public/index.html
 │   └── src/
 │       ├── App.jsx                  # Router + sidebar layout
-│       ├── App.css                  # Dark theme design system
+│       ├── App.css                  # Light banking theme design system
 │       ├── index.js                 # React entry point
 │       ├── utils/api.js             # All API calls (Axios)
 │       └── pages/
@@ -87,7 +87,7 @@ zombieguard/
 | Frontend | React 18, React Router, Recharts, Lucide icons |
 | Backend | Node.js, Express.js |
 | Database | MongoDB + Mongoose |
-| Styling | Custom CSS (dark theme, no UI library needed) |
+| Styling | Custom CSS (light banking theme, no UI library needed) |
 | Scheduling | node-cron (auto-scans every 6h) |
 | Auth | JWT |
 | File parsing | js-yaml (Swagger YAML/JSON) |
@@ -105,7 +105,7 @@ zombieguard/
 ```bash
 cd backend
 cp .env.example .env
-# Edit .env: set your MONGO_URI (default: mongodb://localhost:27017/zombieguard)
+# Edit .env: set your MONGO_URI (default: mongodb://localhost:27017/oblivion)
 
 npm install
 npm run dev
@@ -180,7 +180,7 @@ Risk level thresholds: `low <25` · `medium <50` · `high <75` · `critical ≥7
 
 ## 🎤 How to Present This Project
 
-> *"We built ZombieGuard — a platform that continuously scans banking infrastructure to detect zombie APIs: endpoints that are no longer used but remain publicly accessible and pose serious security risks. The system parses Swagger files and network traffic, classifies every API using a rule-based engine, computes a risk score from 0 to 100 using OWASP criteria, and automatically quarantines high-risk zombies. It integrates with Jira, Slack, and CI/CD pipelines to enforce API lifecycle governance."*
+> *"We built Oblivion — a platform that continuously scans banking infrastructure to detect zombie APIs: endpoints that are no longer used but remain publicly accessible and pose serious security risks. The system parses Swagger files and network traffic, classifies every API using a rule-based engine, computes a risk score from 0 to 100 using OWASP criteria, and automatically quarantines high-risk zombies. It integrates with Jira, Slack, and CI/CD pipelines to enforce API lifecycle governance."*
 
 ### Why judges will love it
 
@@ -197,7 +197,7 @@ Risk level thresholds: `low <25` · `medium <50` · `high <75` · `critical ≥7
 ```env
 # Backend .env
 PORT=5000
-MONGO_URI=mongodb://localhost:27017/zombieguard
+MONGO_URI=mongodb://localhost:27017/oblivion
 JWT_SECRET=change-in-production
 
 # Zombie detection thresholds
@@ -229,5 +229,5 @@ SMTP_PASS=app-password
 MERN Stack (MongoDB · Express · React · Node.js)
 
 **Demo credentials** (once backend is running):
-- Email: `admin@zombieguard.bank`
+- Email: `admin@oblivion.bank`
 - Password: `demo1234`
