@@ -1,9 +1,9 @@
-import React, { useState, useCallback, memo } from 'react';
+import React, { useState, memo } from 'react';
 import { BrowserRouter, Routes, Route, NavLink, Navigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import {
-  LayoutDashboard, Database, AlertTriangle, Shield,
-  Wrench, Activity, Menu, X, Zap, Radio
+  LayoutDashboard, Database, AlertTriangle,
+  Shield, Wrench, Activity, Zap
 } from 'lucide-react';
 
 import Dashboard       from './pages/Dashboard';
@@ -14,102 +14,89 @@ import Remediation     from './pages/Remediation';
 import Monitoring      from './pages/Monitoring';
 import './App.css';
 
-const NAV_MAIN = [
-  { to: '/',            label: 'Dashboard',     icon: LayoutDashboard },
-  { to: '/inventory',   label: 'API Inventory',  icon: Database,       count: true },
-  { to: '/monitoring',  label: 'Monitoring',     icon: Activity,       live: true },
-  { to: '/security',    label: 'Reports',        icon: Shield },
+const NAV = [
+  { to: '/',            label: 'Dashboard',    icon: LayoutDashboard },
+  { to: '/inventory',   label: 'API Inventory', icon: Database,      count: true },
+  { to: '/zombies',     label: 'Zombie APIs',   icon: AlertTriangle, badge: true  },
+  { to: '/security',    label: 'Security',      icon: Shield },
+  { to: '/remediation', label: 'Remediation',   icon: Wrench },
+  { to: '/monitoring',  label: 'Monitoring',    icon: Activity,      live: true   },
 ];
 
-const THREAT_ITEMS = [
-  { label: 'Shadow',     color: '#ef4444', to: '/zombies' },
-  { label: 'Zombie',     color: '#f97316', to: '/zombies' },
-  { label: 'Stale',      color: '#8b5cf6', to: '/zombies' },
-  { label: 'Active',     color: '#10b981', to: '/inventory' },
-];
-
-const Sidebar = memo(({ open, onClose, counts }) => (
-  <aside className={`sidebar${open ? '' : ' collapsed'}`}>
+/* Sidebar is permanent — no toggle, no close button */
+const Sidebar = memo(({ counts }) => (
+  <aside className="sidebar">
     {/* Logo */}
     <div className="sb-logo">
-      <div className="sb-logo-icon"><Zap size={16} /></div>
-      <div className="sb-logo-text">
-        <span className="sb-logo-name">Oblivion</span>
-        <span className="sb-logo-sub">API Ghost Defence</span>
+      <div className="sb-logo-icon">⚡</div>
+      <div>
+        <div className="sb-logo-name">Oblivion</div>
+        <div className="sb-logo-tag">API Ghost Defence</div>
       </div>
-      <button className="sb-close" onClick={onClose}><X size={14} /></button>
     </div>
 
-    {/* Main nav */}
-    <div className="sb-section-label">Main Menu</div>
-    <nav className="sb-nav">
-      {NAV_MAIN.map(({ to, label, icon: Icon, count, live }) => (
+    {/* Main navigation */}
+    <div className="sb-section">
+      <div className="sb-section-title">Navigation</div>
+      {NAV.map(({ to, label, icon: Icon, count, badge, live }) => (
         <NavLink
           key={to}
           to={to}
           end={to === '/'}
           className={({ isActive }) => `sb-link${isActive ? ' active' : ''}`}
         >
-          <span className="sb-link-icon"><Icon size={15} /></span>
-          <span className="sb-link-label">{label}</span>
-          {count && counts?.total > 0 && (
-            <span className="sb-count">{counts.total}</span>
+          <span className="sb-icon"><Icon size={15} /></span>
+          <span className="sb-label">{label}</span>
+          {badge && (counts?.zombie || 0) > 0 && (
+            <span className="sb-badge-pill">{counts.zombie}</span>
           )}
-          {live && (
-            <span className="sb-live">Live</span>
+          {count && (counts?.total || 0) > 0 && (
+            <span className="sb-badge-pill"
+              style={{ background:'rgba(255,255,255,0.1)', color:'#cbd5e1' }}>
+              {counts.total}
+            </span>
           )}
-        </NavLink>
-      ))}
-    </nav>
-
-    {/* Threat summary */}
-    <div className="sb-section-label" style={{ marginTop: 8 }}>Threat Summary</div>
-    <div className="sb-threats">
-      {THREAT_ITEMS.map(t => (
-        <NavLink key={t.label} to={t.to} className="sb-threat-row">
-          <span className="sb-threat-dot" style={{ background: t.color }} />
-          <span className="sb-threat-label">{t.label}</span>
-          <span className="sb-threat-count">
-            {t.label === 'Active'
-              ? (counts?.active || 0)
-              : t.label === 'Zombie'
-              ? (counts?.zombie || 0)
-              : t.label === 'Shadow'
-              ? (counts?.orphaned || 0)
-              : (counts?.deprecated || 0)
-            }
-          </span>
+          {live && <span className="sb-badge-live">LIVE</span>}
         </NavLink>
       ))}
     </div>
 
+    <div className="sb-divider" />
+
+    {/* System status */}
+    <div className="sb-status">
+      <div className="sb-section-title" style={{ padding:'0 8px', marginBottom:6 }}>System</div>
+      <div className="sb-status-row">
+        <span className="sb-status-dot pulse" style={{ background:'#86efac' }} />
+        Scanner Active
+      </div>
+      <div className="sb-status-row">
+        <span className="sb-status-dot" style={{ background:'#86efac' }} />
+        MongoDB Connected
+      </div>
+      <div className="sb-status-row">
+        <span className="sb-status-dot" style={{ background:'#fcd34d' }} />
+        ELK — Setup needed
+      </div>
+    </div>
+
     {/* Footer */}
     <div className="sb-footer">
-      <span className="sb-scanner-dot" />
-      <span className="sb-scanner-text">Scanner Active</span>
-      <span className="sb-version">Oblivion v2.0</span>
+      <div className="sb-footer-name">Oblivion Platform</div>
+      <div className="sb-footer-ver">v2.0.0 · Banking Grade</div>
     </div>
   </aside>
 ));
 
 export default function App() {
-  const [open, setOpen] = useState(true);
   const [counts, setCounts] = useState({});
-  const close = useCallback(() => setOpen(false), []);
-  const openS = useCallback(() => setOpen(true),  []);
 
   return (
     <BrowserRouter>
       <div className="app-shell">
-        <button className={`hamburger${open ? ' hidden' : ''}`} onClick={openS} aria-label="Open">
-          <Menu size={16} />
-        </button>
+        <Sidebar counts={counts} />
 
-        <Sidebar open={open} onClose={close} counts={counts} />
-
-        {open && <div className="sb-backdrop" onClick={close} />}
-
-        <main className={`main-area${open ? '' : ' full'}`}>
+        <main className="main-area">
           <Routes>
             <Route path="/"            element={<Dashboard onCountsLoad={setCounts} />} />
             <Route path="/inventory"   element={<Inventory />} />
@@ -128,10 +115,11 @@ export default function App() {
           duration: 4000,
           style: {
             background: '#fff',
-            color: '#1e293b',
-            border: '1px solid #e2e8f0',
-            borderRadius: '10px',
+            color: '#1c1917',
+            border: '1px solid #e7e5e4',
+            borderRadius: '8px',
             fontSize: '13px',
+            fontFamily: "'Syne', sans-serif",
             boxShadow: '0 4px 16px rgba(0,0,0,0.08)',
           },
         }}
